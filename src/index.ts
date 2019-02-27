@@ -164,7 +164,7 @@ const parseRetornoCnab = <T,D> (config: CnabConfig<T,D>,retorno: string, cnabtyp
     }
 };
 
-const jsonLayout = loadDefaultConfig(BANK.bradesco,240,"conciliacao_bancaria");
+const jsonLayout = loadDefaultConfig(BANK.bradesco,240,"conciliacao_bancaria_05");
 const result = parseRetornoCnab(jsonLayout!,fs.readFileSync("./test/CC1201H04.RET",'utf-8'),240);
 console.log(JSON.stringify(result));
 
