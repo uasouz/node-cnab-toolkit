@@ -31,7 +31,8 @@ export const BANK: Banks = {
         layouts:{
             yaml:{
                 cnab240:{
-                    conciliacao_bancaria: 'conciliacao_bancaria.yml',
+                    conciliacao_bancaria_05: 'conciliacao_bancaria_05.yml',
+                    conciliacao_bancaria_04: 'conciliacao_bancaria_04.yml',
                     cobranca: 'cobranca.yml'
                 },
                 cnab400: {
