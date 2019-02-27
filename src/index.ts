@@ -1,6 +1,6 @@
 import {loadDefaultConfig} from './utils';
 
-import {BANK, CNAB_EOL} from "./config";
+import { CNAB_EOL} from "./config";
 import {
     CnabConfig,
     CNABField,
@@ -10,7 +10,6 @@ import {
     Lote, RetornoCNAB240,
     RetornoCNAB400
 } from "./interfaces";
-import * as fs from "fs";
 
 const parseDataToLayout = (layout: any,header: string) =>{
     const headerObj: GenericKeyedObject = {};
@@ -164,7 +163,4 @@ const parseRetornoCnab = <T,D> (config: CnabConfig<T,D>,retorno: string, cnabtyp
     }
 };
 
-const jsonLayout = loadDefaultConfig(BANK.bradesco,240,"conciliacao_bancaria_05");
-const result = parseRetornoCnab(jsonLayout!,fs.readFileSync("./test/CC1201H04.RET",'utf-8'),240);
-console.log(JSON.stringify(result));
-
+export {loadDefaultConfig,parseRetornoCnab}
