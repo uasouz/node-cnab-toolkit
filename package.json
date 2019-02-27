@@ -1,0 +1,38 @@
+{
+  "name": "nodejs-cnab-toolkit",
+  "version": "0.0.1",
+  "description": "Toolkit Node.JS para arquivos CNAB",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uasouz/nodejs-cnab-toolkit.git"
+  },
+  "author": "Vinícius Moraes Lopes <vlopes45@gmail.com>",
+  "license": "ISC",
+  "scripts": {
+    "coverage": "nyc --extension .ts --include 'src/**/*.ts' --reporter html npm test",
+    "clean": "rimraf dist/",
+    "pretest": "tsc -p ./tsconfig.test.json",
+    "test": "mocha temp/",
+    "dev": "node ./dist/index.js",
+    "build": "npm run tsc",
+    "start": "npm run tsc && node dist/index.js",
+    "tsc": "tsc",
+    "tsc:w": "tsc --watch",
+    "tslint": "tslint -- src/*.ts test/*.ts"
+  },
+  "bugs": {
+    "url": "https://github.com/uasouz/nodejs-cnab-toolkit/issues"
+  },
+  "homepage": "https://github.com/uasouz/nodejs-cnab-toolkit#readme",
+  "dependencies": {
+    "js-yaml": "^3.12.0"
+  },
+  "devDependencies": {
+    "@types/node": "^11.9.5",
+    "@types/mocha": "^5.2.5",
+    "mocha": "^6.0.2",
+    "@types/js-yaml": "^3.12.0",
+    "chai": "^4.2.0"
+  }
+}

@@ -1,0 +1,484 @@
+{
+  "servico": "deposito_identificado",
+  "versao": "IED810",
+  "layout": "cnab400",
+  "retorno": {
+    "header_arquivo": {
+      "informar_zero": {
+        "pos": [
+          1,
+          1
+        ],
+        "picture": "9(1)",
+        "default": 0
+      },
+      "data_arquivo": {
+        "pos": [
+          2,
+          9
+        ],
+        "picture": "9(8)"
+      },
+      "zero_zero_um": {
+        "pos": [
+          10,
+          12
+        ],
+        "picture": "9(3)",
+        "default": "001"
+      },
+      "versao": {
+        "pos": [
+          13,
+          18
+        ],
+        "picture": "X(6)",
+        "default": "IED810"
+      },
+      "agencia_favorecido": {
+        "pos": [
+          19,
+          22
+        ],
+        "picture": "9(4)"
+      },
+      "conta_favorecido": {
+        "pos": [
+          23,
+          32
+        ],
+        "picture": "9(10)"
+      },
+      "brancos": {
+        "pos": [
+          33,
+          176
+        ],
+        "picture": "X(144)"
+      },
+      "mci_client": {
+        "pos": [
+          177,
+          185
+        ],
+        "picture": "9(9)"
+      },
+      "numero_contrato_ied": {
+        "pos": [
+          186,
+          194
+        ],
+        "picture": "9(9)"
+      },
+      "numero_sequencial_arquivo": {
+        "pos": [
+          195,
+          200
+        ],
+        "picture": "9(6)"
+      }
+    },
+    "trailer_arquivo": {
+      "nove": {
+        "pos": [
+          1,
+          1
+        ],
+        "picture": "9(1)",
+        "default": "9"
+      },
+      "data_deposito": {
+        "pos": [
+          2,
+          9
+        ],
+        "picture": "9(8)"
+      },
+      "valor_total_depositado": {
+        "pos": [
+          10,
+          26
+        ],
+        "picture": "9(17)"
+      },
+      "valor_total_depositado_cheque": {
+        "pos": [
+          27,
+          43
+        ],
+        "picture": "9(17)"
+      },
+      "quantidade_total_registros": {
+        "pos": [
+          44,
+          48
+        ],
+        "picture": "9(5)"
+      },
+      "brancos": {
+        "pos": [
+          49,
+          200
+        ],
+        "picture": "X(152)"
+      }
+    },
+    "detalhes": {
+      "segmento_1": {
+        "tipo_registro": {
+          "pos": [
+            1,
+            1
+          ],
+          "picture": "9(1)",
+          "default": "1"
+        },
+        "data_deposito": {
+          "pos": [
+            2,
+            9
+          ],
+          "picture": "9(8)"
+        },
+        "numero_lote_lancamento_sequencial": {
+          "pos": [
+            10,
+            15
+          ],
+          "picture": "9(6)"
+        },
+        "cnpj_cpf": {
+          "pos": [
+            16,
+            29
+          ],
+          "picture": "9(14)"
+        },
+        "codigo_identificacao_3": {
+          "pos": [
+            30,
+            54
+          ],
+          "picture": "X(25)"
+        },
+        "valor_depositado_dinheiro": {
+          "pos": [
+            55,
+            66
+          ],
+          "picture": "9(12)"
+        },
+        "valor_cheque_bb_liquidado": {
+          "pos": [
+            67,
+            76
+          ],
+          "picture": "9(10)"
+        },
+        "brancos_1": {
+          "pos": [
+            77,
+            79
+          ],
+          "picture": "X(3)"
+        },
+        "valor_depositado": {
+          "pos": [
+            80,
+            96
+          ],
+          "picture": "X(17)"
+        },
+        "valor_depositado_cheque": {
+          "pos": [
+            97,
+            113
+          ],
+          "picture": "9(17)"
+        },
+        "agencia_recebedora": {
+          "pos": [
+            114,
+            117
+          ],
+          "picture": "9(4)"
+        },
+        "codigo_identificacao_1": {
+          "pos": [
+            118,
+            134
+          ],
+          "picture": "9(17)"
+        },
+        "codigo_identificacao_2": {
+          "pos": [
+            135,
+            151
+          ],
+          "picture": "9(17)"
+        },
+        "padrao_zero": {
+          "pos": [
+            152,
+            152
+          ],
+          "picture": "9(1)"
+        },
+        "data_credito": {
+          "pos": [
+            153,
+            160
+          ],
+          "picture": "9(8)"
+        },
+        "brancos_2": {
+          "pos": [
+            161,
+            165
+          ],
+          "picture": "X(5)"
+        },
+        "banco_sacado_primeiro_cheque": {
+          "pos": [
+            166,
+            168
+          ],
+          "picture": "9(3)"
+        },
+        "agencia_sacada_primeiro_cheque": {
+          "pos": [
+            169,
+            173
+          ],
+          "picture": "9(5)"
+        },
+        "numero_primeiro_cheque": {
+          "pos": [
+            174,
+            180
+          ],
+          "picture": "9(7)"
+        },
+        "valor_primeiro_cheque": {
+          "pos": [
+            181,
+            197
+          ],
+          "picture": "9(17)"
+        },
+        "dias_bloqueio_primeiro_cheque": {
+          "pos": [
+            198,
+            200
+          ],
+          "picture": "9(3)"
+        }
+      },
+      "segmento_3": {
+        "tipo_registro": {
+          "pos": [
+            1,
+            1
+          ],
+          "picture": "9(1)"
+        },
+        "data_deposito": {
+          "pos": [
+            2,
+            9
+          ],
+          "picture": "9(8)"
+        },
+        "numero_lote_lancamento": {
+          "pos": [
+            10,
+            15
+          ],
+          "picture": "9(6)"
+        },
+        "banco_cheque": {
+          "pos": [
+            16,
+            18
+          ],
+          "picture": "9(3)"
+        },
+        "agencia_cheque": {
+          "pos": [
+            19,
+            23
+          ],
+          "picture": "9(5)"
+        },
+        "numero_cheque": {
+          "pos": [
+            24,
+            30
+          ],
+          "picture": "9(7)"
+        },
+        "valor_cheque": {
+          "pos": [
+            31,
+            47
+          ],
+          "picture": "9(17)"
+        },
+        "quantidade_dias_bloqueio_cheque": {
+          "pos": [
+            48,
+            50
+          ],
+          "picture": "9(3)"
+        },
+        "banco_cheque_2": {
+          "pos": [
+            51,
+            53
+          ],
+          "picture": "9(3)"
+        },
+        "agencia_cheque_2": {
+          "pos": [
+            54,
+            58
+          ],
+          "picture": "9(5)"
+        },
+        "numero_cheque_2": {
+          "pos": [
+            59,
+            65
+          ],
+          "picture": "9(7)"
+        },
+        "valor_cheque_2": {
+          "pos": [
+            66,
+            82
+          ],
+          "picture": "9(17)"
+        },
+        "quantidade_dias_bloqueio_cheque_2": {
+          "pos": [
+            83,
+            85
+          ],
+          "picture": "9(3)"
+        },
+        "banco_cheque_3": {
+          "pos": [
+            86,
+            88
+          ],
+          "picture": "9(3)"
+        },
+        "agencia_cheque_3": {
+          "pos": [
+            89,
+            93
+          ],
+          "picture": "9(5)"
+        },
+        "numero_cheque_3": {
+          "pos": [
+            94,
+            100
+          ],
+          "picture": "9(7)"
+        },
+        "valor_cheque_3": {
+          "pos": [
+            101,
+            117
+          ],
+          "picture": "9(17)"
+        },
+        "quantidade_dias_bloqueio_cheque_3": {
+          "pos": [
+            118,
+            120
+          ],
+          "picture": "9(3)"
+        },
+        "banco_cheque_4": {
+          "pos": [
+            121,
+            123
+          ],
+          "picture": "9(3)"
+        },
+        "agencia_cheque_4": {
+          "pos": [
+            124,
+            128
+          ],
+          "picture": "9(5)"
+        },
+        "numero_cheque_4": {
+          "pos": [
+            129,
+            135
+          ],
+          "picture": "9(7)"
+        },
+        "valor_cheque_4": {
+          "pos": [
+            136,
+            152
+          ],
+          "picture": "9(17)"
+        },
+        "quantidade_dias_bloqueio_cheque_4": {
+          "pos": [
+            153,
+            155
+          ],
+          "picture": "9(3)"
+        },
+        "banco_cheque_5": {
+          "pos": [
+            156,
+            158
+          ],
+          "picture": "9(3)"
+        },
+        "agencia_cheque_5": {
+          "pos": [
+            159,
+            163
+          ],
+          "picture": "9(5)"
+        },
+        "numero_cheque_5": {
+          "pos": [
+            164,
+            170
+          ],
+          "picture": "9(7)"
+        },
+        "valor_cheque_5": {
+          "pos": [
+            171,
+            187
+          ],
+          "picture": "9(17)"
+        },
+        "quantidade_dias_bloqueio_cheque_5": {
+          "pos": [
+            188,
+            190
+          ],
+          "picture": "9(3)"
+        },
+        "brancos": {
+          "pos": [
+            191,
+            200
+          ],
+          "picture": "X(10)"
+        }
+      }
+    }
+  }
+}
