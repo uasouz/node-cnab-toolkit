@@ -197,3 +197,6 @@ interface Trailer_arquivo {
     quantidade_contas: number;
     exclusivo_febraban_02: string;
 }
+
+
+export {Header_arquivo,Header_lote,Segmento_t,Segmento_u,Segmento_y01,Segmento_y50,Trailer_lote,Trailer_arquivo}

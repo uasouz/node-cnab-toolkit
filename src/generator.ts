@@ -9,36 +9,55 @@ export function generateGolangType(data: object, typename = data.constructor.nam
     return jsonToGo(JSON.stringify(data), typename);
 }
 
-interface ParsedLayout {remessa: any,retorno: any}
+interface ParsedLayout {
+    remessa: any,
+    retorno: any
+}
 
-function generateCnab400Producer(headerInterface: any, segmentsInterfaces: any, trailerInterface: any,segmentsInterfacesPiped: any) {
-    const producer = "class Cnab400Producer<"+`${headerInterface},${segmentsInterfaces},${trailerInterface}> {
-    detalhes: (${segmentsInterfacesPiped})[] = [];
-    header: ${headerInterface};
-    trailer: ${trailerInterface};
-    constructor(
+
+function generateCnab400Producer(headerInterface: string, segmentsInterfaces: string[], trailerInterface: string) {
+    const producer = `
+import {${headerInterface},${trailerInterface},${segmentsInterfaces.join(',')}} from './interface.remessa'
+type TipoDetalhes = ${segmentsInterfaces.join('|')}
+
+class Cnab400Producer {
+detalhes: TipoDetalhes[] = [];
+header: ${headerInterface};
+trailer: ${trailerInterface};
+constructor(
     header: ${headerInterface},
-    trailer: ${trailerInterface}){
-        this.header = header;
-        this.trailer = trailer;
-    }
+trailer: ${trailerInterface}){
+    this.header = header;
+    this.trailer = trailer;
+}
 
-    addDetail = (detalhe: ${segmentsInterfacesPiped})=>{
-      this.detalhes.push(detalhe)  
-    }
-    
-    gerarRemessa = ()=>{
-    
-    }
-}`;
+addDetail = (detalhe: TipoDetalhes)=>{
+    this.detalhes.push(detalhe)
+};
+
+gerarRemessa = ()=>{
+
+}
+}
+`;
+    return producer
 }
 
 //TYPESCRIPT INTERFACE GENERATOR - Usando json2ts como paleativo
-function generateTypeScriptInterface(Data: ParsedLayout,name: string): Boolean {
-    const interfaceRemessaString = json2ts(JSON.stringify(Data.remessa),{rootName: "remessa_"+name,prefix:""});
-    fs.writeFileSync("./generated/interface.remessa.ts", interfaceRemessaString);
-    const interfaceRetornoString = json2ts(JSON.stringify(Data.retorno),{rootName: 'retorno_'+name,prefix:""});
-    fs.writeFileSync("./generated/interface.retorno.ts", interfaceRetornoString);
+function generateTypeScriptInterface(Data: ParsedLayout, name: string,): Boolean {
+    const RemessaExports: string[] = [];
+    Object.keys(Data.remessa).forEach(key=>{
+        RemessaExports.push(capitalize(key))
+    });
+    const interfaceRemessaString = json2ts(JSON.stringify(Data.remessa), {rootName: "remessa_" + name, prefix: ""});
+    fs.writeFileSync("./generated/interface.remessa.ts", interfaceRemessaString +"\n\n" + 'export {'+RemessaExports.join(',')+'}');
+
+    const RetornoExports: string[] = [];
+    Object.keys(Data.retorno).forEach(key=>{
+        RetornoExports.push(capitalize(key))
+    });
+    const interfaceRetornoString = json2ts(JSON.stringify(Data.retorno), {rootName: 'retorno_' + name, prefix: ""});
+    fs.writeFileSync("./generated/interface.retorno.ts", interfaceRetornoString+"\n\n" + 'export {'+RetornoExports.join(',')+'}');
     return true
 }
 
@@ -55,11 +74,17 @@ const parseDataToLayout = (layout: any) => {
     return layoutObj
 };
 
-function parseLayout(Layout: CnabConfig<any, any>) : ParsedLayout {
-    const layoutResult: ParsedLayout = {remessa:{},retorno:{}};
+
+const capitalize = function(value: string) {
+    return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
+function parseLayout(Layout: CnabConfig<any, any>): ParsedLayout {
+    const layoutResult: ParsedLayout = {remessa: {}, retorno: {}};
     if (Layout.layout == 'cnab240') {
         const layout = Layout as CnabConfig<LayoutCNAB240, LayoutCNAB240>;
-        if(layout.retorno) {
+        const segmentosRemessa: string[] = [];
+        if (layout.retorno) {
             layoutResult['retorno']['header_arquivo'] = parseDataToLayout(layout.retorno.header_arquivo);
             layoutResult['retorno']['header_lote'] = parseDataToLayout(layout.retorno.header_lote);
             Object.keys(layout.retorno.detalhes).forEach((key) => {
@@ -69,23 +94,25 @@ function parseLayout(Layout: CnabConfig<any, any>) : ParsedLayout {
             layoutResult['retorno']['trailer_lote'] = parseDataToLayout(layout.retorno.trailer_lote);
             layoutResult['retorno']['trailer_arquivo'] = parseDataToLayout(layout.retorno.trailer_arquivo);
         }
-        if(layout.remessa) {
+        if (layout.remessa) {
             layoutResult['remessa']['header_arquivo'] = parseDataToLayout(layout.remessa.header_arquivo);
             layoutResult['remessa']['header_lote'] = parseDataToLayout(layout.remessa.header_lote);
-            Object.keys(layout.remessa.detalhes).forEach((key) => {
+            Object.keys(layout.remessa.detalhes).forEach((key:string) => {
                 const detalhe = layout.remessa.detalhes[key];
+                segmentosRemessa.push(capitalize(key))
                 layoutResult['remessa'][key] = parseDataToLayout(detalhe)
             });
             layoutResult['remessa']['trailer_lote'] = parseDataToLayout(layout.remessa.trailer_lote);
             layoutResult['remessa']['trailer_arquivo'] = parseDataToLayout(layout.remessa.trailer_arquivo);
         }
+        fs.writeFileSync("./generated/producer.remessa.ts",generateCnab400Producer('Header_arquivo', segmentosRemessa, 'Trailer_arquivo'));
         return layoutResult
     } else {
 
     }
-    return {remessa:{},retorno:{}}
+    return {remessa: {}, retorno: {}}
 }
 
 export function gerarInterfaceLayout<T, D>(Layout: CnabConfig<T, D>): any {
-    return generateTypeScriptInterface(parseLayout(Layout),Layout.servico)
+    return generateTypeScriptInterface(parseLayout(Layout), Layout.servico)
 }
