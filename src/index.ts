@@ -7,8 +7,8 @@ import {
     GenericKeyedObject,
     LayoutCNAB240,
     LayoutCNAB400,
-    Lote, RetornoCNAB240,
-    RetornoCNAB400
+    Lote, CNAB240,
+    CNAB400
 } from "./interfaces";
 
 const parseDataToLayout = (layout: any,header: string) =>{
@@ -20,7 +20,7 @@ const parseDataToLayout = (layout: any,header: string) =>{
     return headerObj
 };
 
-const defaultCNAB240Parser = (layout: LayoutCNAB240,parameters: RetornoCNAB240) =>{
+const defaultCNAB240Parser = (layout: LayoutCNAB240,parameters: CNAB240) =>{
     let {header_arquivo, lotes, trailer_arquivo} = parameters;
     const result: GenericKeyedObject = {};
     //Header Parse
@@ -69,7 +69,7 @@ const defaultCNAB240Parser = (layout: LayoutCNAB240,parameters: RetornoCNAB240) 
     return result
 };
 
-const defaultCNAB400Parser = (layout: LayoutCNAB400,parameters: RetornoCNAB400) =>{
+const defaultCNAB400Parser = (layout: LayoutCNAB400,parameters: CNAB400) =>{
     let {header_arquivo, detalhes, trailer_arquivo} = parameters;
     const result: GenericKeyedObject = {};
     //Header Parse
@@ -126,14 +126,14 @@ const parseRetornoCnab = <T,D> (config: CnabConfig<T,D>,retorno: string, cnabtyp
     }
     const array_retorno = retorno.split(CNAB_EOL);
     if(cnabtype==400) {
-        const data: RetornoCNAB400 =  new class implements RetornoCNAB400 {
+        const data: CNAB400 =  new class implements CNAB400 {
             detalhes = array_retorno.slice(1,array_retorno.length-1);
             header_arquivo = array_retorno[0];
             trailer_arquivo = array_retorno[array_retorno.length - 1];
         };
         return parser(config.retorno,data)
     } else {
-        const data: RetornoCNAB240 =  new class implements RetornoCNAB240 {
+        const data: CNAB240 =  new class implements CNAB240 {
             lotes: { [p: string]: Lote } = {};
             header_arquivo: any;
             trailer_arquivo: any;

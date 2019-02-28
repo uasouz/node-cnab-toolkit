@@ -9,7 +9,7 @@ export interface LayoutCNAB400{
     trailer_arquivo: any;
 }
 
-export interface RetornoCNAB400 {
+export interface CNAB400 {
     header_arquivo: string;
     detalhes: string[];
     trailer_arquivo: string;
@@ -21,7 +21,7 @@ export interface Lote {
     trailer_lote: string;
 }
 
-export interface RetornoCNAB240 {
+export interface CNAB240 {
     header_arquivo: string;
     lotes: {[key:string] : Lote};
     trailer_arquivo: string;
@@ -30,7 +30,7 @@ export interface RetornoCNAB240 {
 export interface LayoutCNAB240 {
     header_arquivo: any;
     header_lote: any;
-    detalhes: any[];
+    detalhes: GenericKeyedObject;
     trailer_lote: any;
     trailer_arquivo: any;
 }
