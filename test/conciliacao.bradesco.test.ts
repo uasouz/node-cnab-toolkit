@@ -9,7 +9,7 @@ describe('Teste de conciliacao bancária Bradesco - CNAB240 - versao 05', ()=>{
     it('Teste de carregamento de configuração padrão',(done)=>{
         layoutConfig = loadDefaultConfig(BANK.bradesco,240,"conciliacao_bancaria_05");
         done()
-    })
+    });
 
     it('Teste de parse de retorno da conciliacao bancária do Bradesco',(done => {
         const result = parseRetornoCnab(layoutConfig!,fs.readFileSync("./test/retornos/bradesco/conciliacao/CC1201H04.RET",'utf-8'),240);
