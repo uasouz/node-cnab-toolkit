@@ -1,23 +1,33 @@
+import {
+    Header_arquivo,
+    Trailer_arquivo,
+    Segmento_p,
+    Segmento_q,
+    Segmento_r,
+    Segmento_s,
+    Segmento_y01,
+    Segmento_y50
+} from './interface.remessa'
 
-import {Header_arquivo,Trailer_arquivo,Segmento_p,Segmento_q,Segmento_r,Segmento_s,Segmento_y01,Segmento_y50} from './interface.remessa'
-type TipoDetalhes = Segmento_p|Segmento_q|Segmento_r|Segmento_s|Segmento_y01|Segmento_y50
+type TipoDetalhes = Segmento_p | Segmento_q | Segmento_r | Segmento_s | Segmento_y01 | Segmento_y50
 
 class Cnab400Producer {
-detalhes: TipoDetalhes[] = [];
-header: Header_arquivo;
-trailer: Trailer_arquivo;
-constructor(
-    header: Header_arquivo,
-trailer: Trailer_arquivo){
-    this.header = header;
-    this.trailer = trailer;
-}
+    detalhes: TipoDetalhes[] = [];
+    header: Header_arquivo;
+    trailer: Trailer_arquivo;
 
-addDetail = (detalhe: TipoDetalhes)=>{
-    this.detalhes.push(detalhe)
-};
+    constructor(
+        header: Header_arquivo,
+        trailer: Trailer_arquivo) {
+        this.header = header;
+        this.trailer = trailer;
+    }
 
-gerarRemessa = ()=>{
+    addDetail = (detalhe: TipoDetalhes) => {
+        this.detalhes.push(detalhe)
+    };
 
-}
+    gerarRemessa = () => {
+
+    }
 }

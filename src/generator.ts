@@ -17,27 +17,28 @@ interface ParsedLayout {
 
 function generateCnab400Producer(headerInterface: string, segmentsInterfaces: string[], trailerInterface: string) {
     const producer = `
-import {${headerInterface},${trailerInterface},${segmentsInterfaces.join(',')}} from './interface.remessa'
+import {${headerInterface},${trailerInterface},${segmentsInterfaces.join(',\n')}} from './interface.remessa'
 type TipoDetalhes = ${segmentsInterfaces.join('|')}
 
 class Cnab400Producer {
-detalhes: TipoDetalhes[] = [];
-header: ${headerInterface};
-trailer: ${trailerInterface};
-constructor(
-    header: ${headerInterface},
-trailer: ${trailerInterface}){
-    this.header = header;
-    this.trailer = trailer;
-}
+    detalhes: TipoDetalhes[] = [];
+    header: Header_arquivo;
+    trailer: Trailer_arquivo;
 
-addDetail = (detalhe: TipoDetalhes)=>{
-    this.detalhes.push(detalhe)
-};
+    constructor(
+        header: Header_arquivo,
+        trailer: Trailer_arquivo) {
+        this.header = header;
+        this.trailer = trailer;
+    }
 
-gerarRemessa = ()=>{
+    addDetail = (detalhe: TipoDetalhes) => {
+        this.detalhes.push(detalhe)
+    };
 
-}
+    gerarRemessa = () => {
+
+    }
 }
 `;
     return producer
