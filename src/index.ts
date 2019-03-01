@@ -3,7 +3,6 @@ import {loadDefaultConfig} from './utils';
 import { CNAB_EOL} from "./config";
 import {
     CnabConfig,
-    CNABField,
     GenericKeyedObject,
     LayoutCNAB240,
     LayoutCNAB400,
@@ -14,7 +13,7 @@ import {
 const parseDataToLayout = (layout: any,header: string) =>{
     const headerObj: GenericKeyedObject = {};
     Object.keys(layout).forEach(key=>{
-        const field = layout[key] as CNABField;
+        const field = layout[key];
         headerObj[key] = header.slice(field.pos[0]-1,field.pos[1])
     });
     return headerObj
@@ -26,7 +25,7 @@ const defaultCNAB240Parser = (layout: LayoutCNAB240,parameters: CNAB240) =>{
     //Header Parse
     const headerObj: GenericKeyedObject = {};
     Object.keys(layout.header_arquivo).forEach(key=>{
-        const field = layout.header_arquivo[key] as CNABField;
+        const field = layout.header_arquivo[key];
         headerObj[key] = header_arquivo.slice(field.pos[0]-1,field.pos[1])
     });
     //End Header Parse
@@ -42,7 +41,7 @@ const defaultCNAB240Parser = (layout: LayoutCNAB240,parameters: CNAB240) =>{
             console.log(detalhe.slice(13,14),Object.keys(segmentos));
             const segmento = segmentos["segmento_"+detalhe.slice(13,14).toLowerCase()];
             Object.keys(segmento).forEach(key=> {
-                const field = segmento[key] as CNABField;
+                const field = segmento[key];
                 detalhesObject[key] = detalhe.slice(field.pos[0] - 1, field.pos[1])
             });
             detalhesObjectArray.push(detalhesObject)
@@ -58,7 +57,7 @@ const defaultCNAB240Parser = (layout: LayoutCNAB240,parameters: CNAB240) =>{
     //Trailer Parse
     const trailerObject: GenericKeyedObject = {};
     Object.keys(layout.trailer_arquivo).forEach(key=>{
-        const field = layout.trailer_arquivo[key] as CNABField;
+        const field = layout.trailer_arquivo[key];
         trailerObject[key] = trailer_arquivo.slice(field.pos[0]-1,field.pos[1])
     });
     //End Trailer Parse
@@ -75,20 +74,20 @@ const defaultCNAB400Parser = (layout: LayoutCNAB400,parameters: CNAB400) =>{
     //Header Parse
     const headerObj: GenericKeyedObject = {};
         Object.keys(layout.header_arquivo).forEach(key=>{
-            const field = layout.header_arquivo[key] as CNABField;
+            const field = layout.header_arquivo[key];
             headerObj[key] = header_arquivo.slice(field.pos[0]-1,field.pos[1])
         });
     //End Header Parse
 
     //Details parse
     const detalhesObjectArray: GenericKeyedObject[] = [];
-    const segmentos = layout.detalhes as GenericKeyedObject;
+    const segmentos = layout.detalhes;
     detalhes.forEach((detalhe)=>{
         const detalhesObject: GenericKeyedObject = {};
         console.log(detalhe.slice(0,1),Object.keys(segmentos));
         const segmento = segmentos["segmento_"+detalhe.slice(0,1)];
         Object.keys(segmento).forEach(key=> {
-            const field = segmento[key] as CNABField;
+            const field = segmento[key];
             detalhesObject[key] = detalhe.slice(field.pos[0] - 1, field.pos[1])
         });
         detalhesObjectArray.push(detalhesObject)
@@ -98,7 +97,7 @@ const defaultCNAB400Parser = (layout: LayoutCNAB400,parameters: CNAB400) =>{
     //Trailer Parse
     const trailerObject: GenericKeyedObject = {};
     Object.keys(layout.trailer_arquivo).forEach(key=>{
-        const field = layout.trailer_arquivo[key] as CNABField;
+        const field = layout.trailer_arquivo[key];
         trailerObject[key] = trailer_arquivo.slice(field.pos[0]-1,field.pos[1])
     });
     //End Trailer Parse

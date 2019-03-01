@@ -3,12 +3,6 @@ export interface DataType {
     cnab400?: any;
 }
 
-export interface LayoutCNAB400{
-    header_arquivo: any;
-    detalhes: any[];
-    trailer_arquivo: any;
-}
-
 export interface CNAB400 {
     header_arquivo: string;
     detalhes: string[];
@@ -27,12 +21,22 @@ export interface CNAB240 {
     trailer_arquivo: string;
 }
 
-export interface LayoutCNAB240 {
-    header_arquivo: any;
-    header_lote: any;
+export interface LayoutCNAB400{
+    header_arquivo: CNABConfigObject;
     detalhes: GenericKeyedObject;
-    trailer_lote: any;
-    trailer_arquivo: any;
+    trailer_arquivo: CNABConfigObject;
+}
+
+export interface LayoutCNAB240 {
+    header_arquivo: CNABConfigObject;
+    header_lote: CNABConfigObject;
+    detalhes: GenericKeyedObject;
+    trailer_lote: CNABConfigObject;
+    trailer_arquivo: CNABConfigObject;
+}
+
+export interface CNABConfigObject{
+    [key: string]: CNABField
 }
 
 export interface CNABField{

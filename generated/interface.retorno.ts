@@ -12,7 +12,7 @@ interface Header_arquivo {
     codigo_banco: number;
     lote_servico: number;
     tipo_registro: number;
-    exclusivo_febraban_01: number;
+    exclusivo_febraban_01: string;
     tipo_inscricao: number;
     numero_inscricao: number;
     codigo_convenio: string;
@@ -32,7 +32,7 @@ interface Header_arquivo {
     densidade_gravacao: number;
     reservado_banco_01: string;
     reservado_empresa_01: string;
-    exclusivo_febraban_03: number;
+    exclusivo_febraban_03: string;
 }
 interface Header_lote {
     codigo_banco: number;
@@ -174,7 +174,7 @@ interface Trailer_lote {
     codigo_banco: number;
     lote_servico: number;
     tipo_registro: number;
-    exclusivo_febraban_01: number;
+    exclusivo_febraban_01: string;
     quantidade_registros: number;
     quantidade_titulos_simples: number;
     valor_total_titulos_simples: number;
@@ -191,7 +191,7 @@ interface Trailer_arquivo {
     codigo_banco: number;
     lote_servico: number;
     tipo_registro: number;
-    exclusivo_febraban_01: number;
+    exclusivo_febraban_01: string;
     quantidade_lotes: number;
     quantidade_registros: number;
     quantidade_contas: number;

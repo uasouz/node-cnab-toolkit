@@ -1,4 +1,4 @@
-import {CNAB240, CnabConfig, CNABField, GenericKeyedObject, LayoutCNAB240} from "./interfaces";
+import {CNAB240, CnabConfig, CNABConfigObject, CNABField, GenericKeyedObject, LayoutCNAB240} from "./interfaces";
 
 const jsonToGo = require('./json-to-go.js');
 import {json2ts} from "json-ts/dist";
@@ -15,12 +15,60 @@ interface ParsedLayout {
 }
 
 
-function generateCnab400Producer(headerInterface: string, segmentsInterfaces: string[], trailerInterface: string) {
+function generateCnab400Producer<T>(headerInterface: string, segmentsInterfaces: string[], trailerInterface: string, layout: T) {
     const producer = `
 import {${headerInterface},${trailerInterface},${segmentsInterfaces.join(',\n')}} from './interface.remessa'
 type TipoDetalhes = ${segmentsInterfaces.join('|')}
 
-class Cnab400Producer {
+export interface LayoutCNAB400{
+    header_arquivo: CNABConfigObject;
+    detalhes: {[key: string]: any};
+    trailer_arquivo: CNABConfigObject;
+}
+
+export interface CNABConfigObject{
+    [key: string]: CNABField
+}
+
+export interface CNABField{
+    pos: number[];
+    picture: string;
+    default?: string | number
+}
+
+//0 direita | 1 esquerda
+const stringFulfill = (value:string,expectedSize: number,alignment=0)=>{
+  const offset = expectedSize - value.length;
+    if(offset>0){
+        if(alignment==0){
+            return " ".repeat(offset) + value
+        } else {
+            return value + " ".repeat(offset)
+        }
+    }
+    return value
+};
+
+const assembleLine = (layout: CNABConfigObject, lineData: any) => {
+    let lineDataString = " ".repeat(400);
+    Object.keys(layout).forEach(key => {
+        const field = layout[key];
+        const rx = /(?!\\()(\\d*)(?=\\))/g;
+        const fieldSize = parseInt((field.picture.match(rx) || ['1'])[0]);
+        if (lineData[key]) {
+            lineDataString = lineDataString.slice(0, field.pos[0]-1) + stringFulfill(lineData[key].toString().slice(0, fieldSize),fieldSize) + lineDataString.slice(field.pos[1]-1, -1)
+        } else {
+            lineDataString = lineDataString.slice(0, field.pos[0]-1) + " ".repeat(fieldSize) + lineDataString.slice(field.pos[1]-1, -1)
+        }
+    });
+    console.log("\\nSIZE",lineDataString.length)
+    return lineDataString + "\\r\\n"
+};
+
+
+const layout = ${JSON.stringify(layout)} as LayoutCNAB400
+
+export class Cnab400Producer {
     detalhes: TipoDetalhes[] = [];
     header: Header_arquivo;
     trailer: Trailer_arquivo;
@@ -37,7 +85,9 @@ class Cnab400Producer {
     };
 
     gerarRemessa = () => {
-
+        let remessa = assembleLine(layout.header_arquivo,this.header)
+        remessa+= assembleLine(layout.trailer_arquivo,this.trailer)
+        console.log(remessa)
     }
 }
 `;
@@ -62,14 +112,16 @@ function generateTypeScriptInterface(Data: ParsedLayout, name: string,): Boolean
     return true
 }
 
-const parseDataToLayout = (layout: any) => {
+const parseDataToLayout = (layout: CNABConfigObject) => {
     const layoutObj: GenericKeyedObject = {};
     Object.keys(layout).forEach(key => {
-        const field = layout[key] as CNABField;
-        if (field.picture.match('9')) {
-            layoutObj[key] = 0
+        const field = layout[key];
+        const rx = /(?!\()(\d*)(?=\))/g;
+        const fieldSize = parseInt((field.picture.match(rx)||['1'])[0]);
+        if (field.picture.match('X')) {
+            layoutObj[key] = " "
         } else {
-            layoutObj[key] = ""
+            layoutObj[key] = 0
         }
     });
     return layoutObj
@@ -100,13 +152,13 @@ function parseLayout(Layout: CnabConfig<any, any>): ParsedLayout {
             layoutResult['remessa']['header_lote'] = parseDataToLayout(layout.remessa.header_lote);
             Object.keys(layout.remessa.detalhes).forEach((key:string) => {
                 const detalhe = layout.remessa.detalhes[key];
-                segmentosRemessa.push(capitalize(key))
+                segmentosRemessa.push(capitalize(key));
                 layoutResult['remessa'][key] = parseDataToLayout(detalhe)
             });
             layoutResult['remessa']['trailer_lote'] = parseDataToLayout(layout.remessa.trailer_lote);
             layoutResult['remessa']['trailer_arquivo'] = parseDataToLayout(layout.remessa.trailer_arquivo);
         }
-        fs.writeFileSync("./generated/producer.remessa.ts",generateCnab400Producer('Header_arquivo', segmentosRemessa, 'Trailer_arquivo'));
+        fs.writeFileSync("./generated/producer.remessa.ts",generateCnab400Producer('Header_arquivo', segmentosRemessa, 'Trailer_arquivo',layout.remessa));
         return layoutResult
     } else {
 
