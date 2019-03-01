@@ -1,4 +1,4 @@
-import {CNAB240, CnabConfig, CNABConfigObject, CNABField, GenericKeyedObject, LayoutCNAB240} from "./interfaces";
+import { CnabConfig, CNABConfigObject,  GenericKeyedObject, LayoutCNAB240} from "./interfaces";
 
 const jsonToGo = require('./json-to-go.js');
 import {json2ts} from "json-ts/dist";
@@ -16,6 +16,12 @@ interface ParsedLayout {
 
 
 function generateCnab400Producer<T>(headerInterface: string, segmentsInterfaces: string[], trailerInterface: string, layout: T) {
+
+    let segmentsArrayCode = "";
+    segmentsInterfaces.forEach(interfaceName=>{
+        segmentsArrayCode += `\n    ${interfaceName.toLowerCase()} : ${interfaceName}[] = [];`
+    });
+
     const producer = `
 import {${headerInterface},${trailerInterface},${segmentsInterfaces.join(',\n')}} from './interface.remessa'
 type TipoDetalhes = ${segmentsInterfaces.join('|')}
@@ -37,7 +43,7 @@ export interface CNABField{
 }
 
 //0 direita | 1 esquerda
-const stringFulfill = (value:string,expectedSize: number,alignment=0)=>{
+const stringFulfill = (value:string,expectedSize: number,alignment=1)=>{
   const offset = expectedSize - value.length;
     if(offset>0){
         if(alignment==0){
@@ -68,7 +74,9 @@ const assembleLine = (layout: CNABConfigObject, lineData: any) => {
 
 const layout = ${JSON.stringify(layout)} as LayoutCNAB400
 
-export class Cnab400Producer {
+export class Cnab400Producer {\n`+ segmentsArrayCode+
+
+    `
     detalhes: TipoDetalhes[] = [];
     header: Header_arquivo;
     trailer: Trailer_arquivo;
