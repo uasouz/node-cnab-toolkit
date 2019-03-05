@@ -1,8 +1,10 @@
-import { CnabConfig, CNABConfigObject,  GenericKeyedObject, LayoutCNAB240} from "./interfaces";
+import {CnabConfig, CNABConfigObject, GenericKeyedObject, LayoutCNAB240, LayoutCNAB400} from "./interfaces";
 
 const jsonToGo = require('./json-to-go.js');
 import {json2ts} from "json-ts/dist";
 import * as fs from 'fs'
+import {generateCnab400Producer} from "./generator.400";
+import {generateCnab240Producer} from "./generator.240";
 
 //GOLANG GENERATOR
 export function generateGolangType(data: object, typename = data.constructor.name) {
@@ -12,94 +14,6 @@ export function generateGolangType(data: object, typename = data.constructor.nam
 interface ParsedLayout {
     remessa: any,
     retorno: any
-}
-
-
-function generateCnab400Producer<T>(headerInterface: string, segmentsInterfaces: string[], trailerInterface: string, layout: T) {
-
-    let segmentsArrayCode = "";
-    segmentsInterfaces.forEach(interfaceName=>{
-        segmentsArrayCode += `\n    ${interfaceName.toLowerCase()} : ${interfaceName}[] = [];`
-    });
-
-    const producer = `
-import {${headerInterface},${trailerInterface},${segmentsInterfaces.join(',\n')}} from './interface.remessa'
-type TipoDetalhes = ${segmentsInterfaces.join('|')}
-
-export interface LayoutCNAB400{
-    header_arquivo: CNABConfigObject;
-    detalhes: {[key: string]: any};
-    trailer_arquivo: CNABConfigObject;
-}
-
-export interface CNABConfigObject{
-    [key: string]: CNABField
-}
-
-export interface CNABField{
-    pos: number[];
-    picture: string;
-    default?: string | number
-}
-
-//0 direita | 1 esquerda
-const stringFulfill = (value:string,expectedSize: number,alignment=1)=>{
-  const offset = expectedSize - value.length;
-    if(offset>0){
-        if(alignment==0){
-            return " ".repeat(offset) + value
-        } else {
-            return value + " ".repeat(offset)
-        }
-    }
-    return value
-};
-
-const assembleLine = (layout: CNABConfigObject, lineData: any) => {
-    let lineDataString = " ".repeat(400);
-    Object.keys(layout).forEach(key => {
-        const field = layout[key];
-        const rx = /(?!\\()(\\d*)(?=\\))/g;
-        const fieldSize = parseInt((field.picture.match(rx) || ['1'])[0]);
-        if (lineData[key]) {
-            lineDataString = lineDataString.slice(0, field.pos[0]-1) + stringFulfill(lineData[key].toString().slice(0, fieldSize),fieldSize) + lineDataString.slice(field.pos[1]-1, -1)
-        } else {
-            lineDataString = lineDataString.slice(0, field.pos[0]-1) + " ".repeat(fieldSize) + lineDataString.slice(field.pos[1]-1, -1)
-        }
-    });
-    console.log("\\nSIZE",lineDataString.length)
-    return lineDataString + "\\r\\n"
-};
-
-
-const layout = ${JSON.stringify(layout)} as LayoutCNAB400
-
-export class Cnab400Producer {\n`+ segmentsArrayCode+
-
-    `
-    detalhes: TipoDetalhes[] = [];
-    header: Header_arquivo;
-    trailer: Trailer_arquivo;
-
-    constructor(
-        header: Header_arquivo,
-        trailer: Trailer_arquivo) {
-        this.header = header;
-        this.trailer = trailer;
-    }
-
-    addDetail = (detalhe: TipoDetalhes) => {
-        this.detalhes.push(detalhe)
-    };
-
-    gerarRemessa = () => {
-        let remessa = assembleLine(layout.header_arquivo,this.header)
-        remessa+= assembleLine(layout.trailer_arquivo,this.trailer)
-        console.log(remessa)
-    }
-}
-`;
-    return producer
 }
 
 //TYPESCRIPT INTERFACE GENERATOR - Usando json2ts como paleativo
@@ -166,12 +80,31 @@ function parseLayout(Layout: CnabConfig<any, any>): ParsedLayout {
             layoutResult['remessa']['trailer_lote'] = parseDataToLayout(layout.remessa.trailer_lote);
             layoutResult['remessa']['trailer_arquivo'] = parseDataToLayout(layout.remessa.trailer_arquivo);
         }
-        fs.writeFileSync("./generated/producer.remessa.ts",generateCnab400Producer('Header_arquivo', segmentosRemessa, 'Trailer_arquivo',layout.remessa));
+        fs.writeFileSync("./generated/producer.remessa.ts",generateCnab240Producer('Header_arquivo','Header_lote' ,segmentosRemessa, 'Trailer_lote','Trailer_arquivo',layout.remessa));
         return layoutResult
     } else {
-
+        const layout = Layout as CnabConfig<LayoutCNAB400, LayoutCNAB400>;
+        const segmentosRemessa: string[] = [];
+        if (layout.retorno) {
+            layoutResult['retorno']['header_arquivo'] = parseDataToLayout(layout.retorno.header_arquivo);
+            Object.keys(layout.retorno.detalhes).forEach((key) => {
+                const detalhe = layout.retorno.detalhes[key];
+                layoutResult['retorno'][key] = parseDataToLayout(detalhe)
+            });
+            layoutResult['retorno']['trailer_arquivo'] = parseDataToLayout(layout.retorno.trailer_arquivo);
+        }
+        if (layout.remessa) {
+            layoutResult['remessa']['header_arquivo'] = parseDataToLayout(layout.remessa.header_arquivo);
+            Object.keys(layout.remessa.detalhes).forEach((key:string) => {
+                const detalhe = layout.remessa.detalhes[key];
+                segmentosRemessa.push(capitalize(key));
+                layoutResult['remessa'][key] = parseDataToLayout(detalhe)
+            });
+            layoutResult['remessa']['trailer_arquivo'] = parseDataToLayout(layout.remessa.trailer_arquivo);
+        }
+        fs.writeFileSync("./generated/producer.remessa.ts",generateCnab400Producer('Header_arquivo', segmentosRemessa, 'Trailer_arquivo',layout.remessa));
+        return layoutResult
     }
-    return {remessa: {}, retorno: {}}
 }
 
 export function gerarInterfaceLayout<T, D>(Layout: CnabConfig<T, D>): any {
