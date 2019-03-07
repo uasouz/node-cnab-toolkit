@@ -41,8 +41,8 @@ const assembleLine = (layout: CNABConfigObject, lineData: any) => {
     let lineDataString = " ".repeat(400);
     Object.keys(layout).forEach(key => {
         const field = layout[key];
-        const rx = /(?!\\()(\\d*)(?=\\))/g;
-        const fieldSize = parseInt((field.picture.match(rx) || ['1'])[0]);
+        // const rx = /(?!\\()(\\d*)(?=\\))/g;
+        const fieldSize = (field.pos[1]-field.pos[0])+1
         if (lineData[key]) {
             lineDataString = lineDataString.slice(0, field.pos[0]-1) + stringFulfill(lineData[key].toString().slice(0, fieldSize),fieldSize) + lineDataString.slice(field.pos[1]-1, -1)
         } else {
