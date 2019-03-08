@@ -9,6 +9,9 @@
   },
   "author": "Vinícius Moraes Lopes <vlopes45@gmail.com>",
   "license": "ISC",
+  "bin": {
+    "nct": "./dist/cli/index.js"
+  },
   "scripts": {
     "coverage": "nyc --extension .ts --include 'src/**/*.ts' --reporter html npm test",
     "clean": "rimraf dist/",
@@ -26,6 +29,7 @@
   },
   "homepage": "https://github.com/uasouz/nodejs-cnab-toolkit#readme",
   "dependencies": {
+    "commander": "^2.19.0",
     "js-yaml": "^3.12.0",
     "json-ts": "^1.6.4"
   },

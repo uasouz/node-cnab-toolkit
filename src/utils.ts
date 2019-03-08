@@ -4,9 +4,15 @@ import * as yaml from "js-yaml";
 
 import * as fs from 'fs';
 
+import * as path from 'path'
+
 const readYaml = (filename: string) => {
     try {
-        return yaml.safeLoad(fs.readFileSync(filename, `utf8`));
+        if (!fs.existsSync(path.resolve(filename))) {
+            console.error("Arquivo inacessível ou inexistente");
+            return null
+        }
+        return yaml.safeLoad(fs.readFileSync(path.resolve(filename), `utf8`));
     } catch (e) {
         console.log(e);
         return null;
@@ -32,9 +38,12 @@ const loadDefaultConfig = (bank: BankConfig, cnabCode: number, version: string, 
 };
 
 const loadLayoutFromYamlFile = <T, D>(filename: string) => {
-    console.log("loading YAML: "+filename);
+    console.log("Loading YAML: " + path.resolve(filename));
     const data = readYaml(filename);
-    return data as CnabConfig<T, D>;
+    if (data) {
+        return data as CnabConfig<T, D>;
+    }
+    return null
 };
 
 const loadLayoutFromYamlData = <T, D>(data: string) => {

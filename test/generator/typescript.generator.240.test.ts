@@ -14,16 +14,14 @@ import {
 const expect = require('chai').expect;
 
 describe('Teste de geração de tipos em TypeScript', () => {
-    let layoutConfig240: import("../../src/interfaces").CnabConfig<{}, {}> | undefined;
-    let layoutConfig400: import("../../src/interfaces").CnabConfig<{}, {}> | undefined;
+    let layoutConfig240: import("../../src/interfaces").CnabConfig<{}, {}> | undefined | null;
     before(done => {
         layoutConfig240 = loadDefaultConfig(BANK.bradesco, 240, "cobranca");
-        // layoutConfig400 = loadDefaultConfig(BANK.bradesco, 400, "cobranca");
         done()
     });
 
     it('Gerando interface', (done => {
-        if(gerarInterfaceLayout(layoutConfig240!)) {
+        if(layoutConfig240 && gerarInterfaceLayout(layoutConfig240!)) {
             const Cnab240Producer = require('../../generated/producer.remessa').Cnab240Producer;
             const header  = new class implements Header_arquivo {
                 agencia = 1999;
