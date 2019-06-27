@@ -5,7 +5,7 @@ import {CnabConfig} from "../src/interfaces";
 const expect = require('chai').expect;
 
 describe('Teste de conciliacao bancária Bradesco - CNAB240 - versao 05', ()=>{
-    let layoutConfig: CnabConfig<{}, {}> | undefined;
+    let layoutConfig: CnabConfig<{}, {}> | null | undefined;
     it('Teste de carregamento de configuração padrão',(done)=>{
         layoutConfig = loadDefaultConfig(BANK.bradesco,240,"conciliacao_bancaria_05");
         done()

@@ -43,6 +43,23 @@ export const BANK: Banks = {
 
             }
         }
+    },
+    itau: {
+        name:'itau',
+        code: '341',
+        layouts:{
+            yaml:{
+                cnab240:{
+                    cobranca: 'cobranca.yml'
+                },
+                cnab400: {
+                    cobranca: 'cobranca.yml'
+                }
+            },
+            json: {
+
+            }
+        }
     }
 };
 

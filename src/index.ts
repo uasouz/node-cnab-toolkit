@@ -84,7 +84,7 @@ const defaultCNAB400Parser = (layout: LayoutCNAB400,parameters: CNAB400) =>{
     const segmentos = layout.detalhes;
     detalhes.forEach((detalhe)=>{
         const detalhesObject: GenericKeyedObject = {};
-        console.log(detalhe.slice(0,1),Object.keys(segmentos));
+        console.log(detalhe,detalhe.slice(0,1),Object.keys(segmentos));
         const segmento = segmentos["segmento_"+detalhe.slice(0,1)];
         Object.keys(segmento).forEach(key=> {
             const field = segmento[key];
@@ -111,7 +111,7 @@ const defaultCNAB400Parser = (layout: LayoutCNAB400,parameters: CNAB400) =>{
 /**
  * ARQUIVO RETORNO
  * @param {*} config
- * @param {*} cnabtype 
+ * @param {*} cnabtype
  * @param {*} retorno
  * @param {*} parser
  */
@@ -123,7 +123,7 @@ const parseRetornoCnab = <T,D> (config: CnabConfig<T,D>,retorno: string, cnabtyp
     if(!config.retorno){
         throw new Error("Essa configuração de CNAB não tem remessa")
     }
-    const array_retorno = retorno.split(CNAB_EOL);
+    const array_retorno = retorno.split(CNAB_EOL).filter((item)=>{return item != ''});
     if(cnabtype==400) {
         const data: CNAB400 =  new class implements CNAB400 {
             detalhes = array_retorno.slice(1,array_retorno.length-1);
